@@ -1,0 +1,10 @@
+.button {
+  background-color: lightgray;
+  font-size: 20px;
+  border-radius: 5px;
+  height: auto;
+  color: black;
+  &:hover {
+    opacity: 0.5;
+  }
+}
