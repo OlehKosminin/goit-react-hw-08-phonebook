@@ -7,6 +7,7 @@ export const singup = createAsyncThunk(
   async (data, { rejectWithValue }) => {
     try {
       const { data: result } = await api.singup(data);
+
       return result;
     } catch ({ responce }) {
       return rejectWithValue(responce);
@@ -19,6 +20,7 @@ export const login = createAsyncThunk(
   async (data, { rejectWithValue }) => {
     try {
       const { data: result } = await api.login(data);
+      console.log('operation: ', result);
       return result;
     } catch ({ responce }) {
       return rejectWithValue(responce);

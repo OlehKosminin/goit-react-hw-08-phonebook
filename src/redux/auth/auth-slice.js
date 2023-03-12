@@ -33,6 +33,7 @@ const authSlice = createSlice({
         store.error = null;
       })
       .addCase(login.fulfilled, (store, { payload }) => {
+        console.log('payload: ', payload);
         store.loading = false;
         store.user = payload.user;
         store.token = payload.token;
