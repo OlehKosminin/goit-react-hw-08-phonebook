@@ -17,7 +17,7 @@ export const App = () => {
           <BrowserRouter basename="/goit-react-hw-08-phonebook">
             <NavbarAuth />
             <Routes>
-              <Route path="/register" element={<RegisterPage />} />
+              <Route path="/" element={<RegisterPage />} />
               <Route path="/login" element={<LoginPage />} />
               <Route path="/phonebook" element={<Phonebook />} />
               <Route path="*" element={<div>Not Found page</div>} />
