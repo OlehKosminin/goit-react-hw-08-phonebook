@@ -13,7 +13,7 @@ const setToken = token => {
 };
 
 export const singup = async data => {
-  const { data: result } = await instance.post('/users/signup', data);
+  const result = await instance.post('/users/signup', data);
   setToken(result.token);
   return result;
 };
@@ -36,7 +36,6 @@ export const getCurrent = async token => {
 
 export const logout = async () => {
   const { data } = await instance.post('/users/logout');
-  console.log('data: ', data);
   setToken();
   return data;
 };

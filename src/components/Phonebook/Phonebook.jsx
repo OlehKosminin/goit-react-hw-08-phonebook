@@ -3,6 +3,7 @@ import styles from './phonebook.module.scss';
 import ContactList from '../ContactList/ContactList';
 import ContactFilter from '../Filter/Filter';
 import ContactForm from '../ContactForm/ContactForm';
+import { Navigate } from 'react-router-dom';
 
 import { useSelector, useDispatch } from 'react-redux';
 import { useEffect } from 'react';
@@ -17,12 +18,17 @@ import { getFilteredContacts } from 'redux/contacts/contacts-selectors';
 
 const Phonebook = () => {
   const filteredContacts = useSelector(getFilteredContacts);
+  const isLogin = useSelector(store => store.auth.isLogin);
 
   const dispatch = useDispatch();
 
   useEffect(() => {
     dispatch(fetchAllContacts());
   }, [dispatch]);
+
+  if (!isLogin) {
+    return <Navigate to="/login" />;
+  }
 
   const onAddContact = ({ name, number }) => {
     dispatch(fetchAddContact({ name, number }));
