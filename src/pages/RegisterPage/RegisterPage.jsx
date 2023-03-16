@@ -17,6 +17,7 @@ const RegisterPage = () => {
   if (login) {
     return <Navigate to="/phonebook" />;
   }
+
   return (
     <div>
       <h1 className={styled.title}>Create account</h1>

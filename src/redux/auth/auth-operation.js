@@ -7,7 +7,6 @@ export const singup = createAsyncThunk(
   async (data, { rejectWithValue }) => {
     try {
       const { data: result } = await api.singup(data);
-
       return result;
     } catch ({ responce }) {
       return rejectWithValue(responce);
@@ -19,9 +18,43 @@ export const login = createAsyncThunk(
   'auth/login',
   async (data, { rejectWithValue }) => {
     try {
-      const { data: result } = await api.login(data);
-      console.log('operation: ', result);
+      const result = await api.login(data);
       return result;
+    } catch ({ responce }) {
+      return rejectWithValue(responce);
+    }
+  }
+);
+
+export const current = createAsyncThunk(
+  'auth/current',
+  async (_, { rejectWithValue, getState }) => {
+    try {
+      const { auth } = getState();
+
+      const data = await api.getCurrent(auth.token);
+      return data;
+    } catch ({ responce }) {
+      return rejectWithValue(responce);
+    }
+  },
+  {
+    condition: (_, { getState }) => {
+      const { auth } = getState();
+      if (!auth.token) {
+        return false;
+      }
+    },
+  }
+);
+
+export const logout = createAsyncThunk(
+  'auth/logout',
+  async (_, { rejectWithValue }) => {
+    try {
+      const data = await api.logout();
+      console.log('data: ', data);
+      return data;
     } catch ({ responce }) {
       return rejectWithValue(responce);
     }

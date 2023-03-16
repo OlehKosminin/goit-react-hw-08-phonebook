@@ -16,6 +16,7 @@ const LoginPage = () => {
   if (isLogin) {
     return <Navigate to="/phonebook" />;
   }
+
   return (
     <div>
       <h1 className={styled.title}>Login </h1>
