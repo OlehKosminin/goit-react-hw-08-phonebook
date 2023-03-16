@@ -12,7 +12,7 @@ const NavbarAuth = () => {
         <UserMenu />
       ) : (
         <div>
-          <NavLink to="/register">Register</NavLink>
+          <NavLink to="/">Register</NavLink>
           <NavLink to="/login">Login</NavLink>
         </div>
       )}
