@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { singup, login } from './auth-operation';
+import { singup, login, current, logout } from './auth-operation';
 
 const initialState = {
   user: {},
@@ -19,9 +19,11 @@ const authSlice = createSlice({
         store.error = null;
       })
       .addCase(singup.fulfilled, (store, { payload }) => {
+        console.log('payload: ', payload);
+        const { user, token } = payload;
         store.loading = false;
-        store.user = payload.user;
-        store.token = payload.token;
+        store.user = user;
+        store.token = token;
         store.isLogin = true;
       })
       .addCase(singup.rejected, (store, { payload }) => {
@@ -33,13 +35,41 @@ const authSlice = createSlice({
         store.error = null;
       })
       .addCase(login.fulfilled, (store, { payload }) => {
-        console.log('payload: ', payload);
         store.loading = false;
         store.user = payload.user;
         store.token = payload.token;
         store.isLogin = true;
       })
       .addCase(login.rejected, (store, { payload }) => {
+        store.loading = false;
+        store.error = payload;
+      })
+      .addCase(current.pending, store => {
+        store.loading = true;
+        store.error = null;
+      })
+      .addCase(current.fulfilled, (store, { payload }) => {
+        const { name, email } = payload;
+        store.loading = false;
+        store.user.name = name;
+        store.user.email = email;
+        store.isLogin = true;
+      })
+      .addCase(current.rejected, (store, { payload }) => {
+        store.loading = false;
+        store.error = payload;
+      })
+      .addCase(logout.pending, store => {
+        store.loading = true;
+        store.error = null;
+      })
+      .addCase(logout.fulfilled, store => {
+        store.loading = false;
+        store.user = {};
+        store.token = '';
+        store.isLogin = false;
+      })
+      .addCase(logout.rejected, (store, { payload }) => {
         store.loading = false;
         store.error = payload;
       });
