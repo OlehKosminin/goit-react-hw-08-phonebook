@@ -19,8 +19,7 @@ const authSlice = createSlice({
         store.error = null;
       })
       .addCase(singup.fulfilled, (store, { payload }) => {
-        console.log('payload: ', payload);
-        const { user, token } = payload;
+        const { user, token } = payload.data;
         store.loading = false;
         store.user = user;
         store.token = token;
