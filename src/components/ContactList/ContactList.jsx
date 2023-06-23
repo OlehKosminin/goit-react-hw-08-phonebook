@@ -1,37 +1,42 @@
-import PropTypes from 'prop-types';
-import styles from './contactList.module.scss';
-const ContactList = ({ items, removeContact }) => {
-  const contacts = items.map(({ id, name, number }) => (
-    <li key={id}>
-      {name}: {number}
-      <button
-        className={styles.contactListItemBtn}
-        onClick={() => removeContact(id)}
-        type="button"
-      >
-        Delete
-      </button>
-    </li>
-  ));
+import { useDispatch, useSelector } from 'react-redux';
+import { delContact } from 'redux/contacts/operations';
+import { getContacts, getFilter } from 'redux/contacts/selectors';
+import css from './ContactList.module.css';
+
+const getVisibleContacts = (contacts, filter) => {
+  if (!filter) {
+    return contacts;
+  } else {
+    return contacts.filter(contact => {
+      return contact.name.toLowerCase().includes(filter.toLowerCase());
+    });
+  }
+};
+
+export const ContactList = () => {
+  const contacts = useSelector(getContacts);
+  const filter = useSelector(getFilter);
+  const visibleContacts = getVisibleContacts(contacts, filter);
+
+  const dispatch = useDispatch();
+  const handleDelete = id => dispatch(delContact(id));
+
   return (
-    <div>
-      <ol>{contacts}</ol>
+    <div className={css.wraperContactList}>
+      <ul className={css.contactList}>
+        {visibleContacts.map((contact, id) => (
+          <li key={id} className={css.contactListItem}>
+            {contact.name}: {contact.number}
+            <button
+              type="button"
+              className={css.contactListItemBtn}
+              onClick={() => handleDelete(contact.id)}
+            >
+              Delete
+            </button>
+          </li>
+        ))}
+      </ul>
     </div>
   );
-};
-export default ContactList;
-
-ContactList.defaultProps = {
-  items: [],
-};
-
-ContactList.propTypes = {
-  removeContact: PropTypes.func.isRequired,
-  items: PropTypes.arrayOf(
-    PropTypes.shape({
-      id: PropTypes.string.isRequired,
-      name: PropTypes.string.isRequired,
-      number: PropTypes.string.isRequired,
-    })
-  ),
 };

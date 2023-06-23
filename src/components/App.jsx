@@ -1,30 +1,76 @@
-import Phonebook from './Phonebook/Phonebook';
-import { Route, Routes, BrowserRouter } from 'react-router-dom';
-import { Provider } from 'react-redux';
-import NavbarAuth from './NavBar/NavBar';
-import RegisterPage from 'pages/RegisterPage/RegisterPage';
-import LoginPage from 'pages/LoginPage/LoginPage';
-import AuthProvider from 'modules/AuthProvider/AuthProvider';
+import React, { useEffect, lazy } from 'react';
+import { useDispatch } from 'react-redux';
+// import { fetchContacts } from 'redux/contacts/operations';
+import { Route, Routes } from 'react-router-dom';
+import { Layout } from './Layout';
+import { PrivateRoute } from './PrivateRoute';
+import { RestrictedRoute } from './RestrictedRoute';
+import { refreshUser } from 'redux/auth/operations';
+import { useAuth } from './hooks';
+import { Loader } from './Loader/Loader';
 
-import { store, persistor } from 'redux/store';
-import { PersistGate } from 'redux-persist/integration/react';
+const HomePage = lazy(() => import('../pages/Home'));
+const RegisterPage = lazy(() => import('../pages/Register'));
+const LoginPage = lazy(() => import('../pages/Login'));
+const ContactsPage = lazy(() => import('../pages/Contacts'));
 
 export const App = () => {
-  return (
-    <Provider store={store}>
-      <PersistGate loading={null} persistor={persistor}>
-        <AuthProvider>
-          <BrowserRouter basename="/goit-react-hw-08-phonebook">
-            <NavbarAuth />
-            <Routes>
-              <Route path="/" element={<RegisterPage />} />
-              <Route path="/login" element={<LoginPage />} />
-              <Route path="/phonebook" element={<Phonebook />} />
-              <Route path="*" element={<div>Not Found page</div>} />
-            </Routes>
-          </BrowserRouter>
-        </AuthProvider>
-      </PersistGate>
-    </Provider>
+  const dispatch = useDispatch();
+
+  const { isRefreshing } = useAuth();
+
+  useEffect(() => {
+    dispatch(refreshUser());
+    // dispatch(fetchContacts());
+  }, [dispatch]);
+
+  return isRefreshing ? (
+    <Loader />
+  ) : (
+    <Routes>
+      <Route path="/" element={<Layout />}>
+        <Route index element={<HomePage />} />
+        <Route
+          path="register"
+          element={
+            <RestrictedRoute
+              redirectTo="/contacts"
+              component={<RegisterPage />}
+            />
+          }
+        />
+        <Route
+          path="login"
+          element={
+            <RestrictedRoute redirectTo="/contacts" component={<LoginPage />} />
+          }
+        />
+        <Route
+          path="contacts"
+          element={
+            <PrivateRoute redirectTo="/login" component={<ContactsPage />} />
+          }
+        />
+      </Route>
+    </Routes>
+
+    // <div
+    //   style={{
+    //     height: '100vh',
+    //     display: 'flex',
+    //     flexDirection: 'column',
+    //     justifyContent: 'center',
+    //     alignItems: 'center',
+    //     fontSize: 20,
+    //     color: '#010101',
+    //   }}
+    // >
+    //   <h1>Phonebook</h1>
+    //   <ContactForm />
+    //   <h2> Contacts</h2>
+    //   <Filter />
+    //   {isLoading && !error && <Loader />}
+    //   <ContactList />
+    // </div>
   );
 };
